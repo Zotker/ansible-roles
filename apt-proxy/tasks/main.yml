@@ -1,0 +1,8 @@
+- name: Добавление sources.list
+  ansible.builtin.template:
+    src: sources.list.j2
+    dest: /etc/apt/sources.list
+
+- name: Обновление кеша
+  ansible.builtin.apt:
+    update_cache: yes

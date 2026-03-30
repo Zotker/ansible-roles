@@ -1,0 +1,7 @@
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }} main restricted
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }}-updates main restricted
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }} universe
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }}-updates universe
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }} multiverse
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }}-updates multiverse
+deb {{ roles_apt_proxy_url }} {{ ansible_distribution_release }}-backports main restricted universe multiverse

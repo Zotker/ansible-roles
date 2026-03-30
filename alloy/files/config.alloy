@@ -1,0 +1,6 @@
+//// Exporter
+// Expose метрик по "/api/v0/component/prometheus.exporter.unix.node_exporter/metrics"
+
+prometheus.exporter.unix "node_exporter" {
+
+}

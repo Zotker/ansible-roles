@@ -1,0 +1,59 @@
+- name: Подготовка окружения
+  ansible.builtin.apt:
+    name: 
+      - zip 
+      - unzip
+    update_cache: yes
+
+- name: Скачивание файла
+  ansible.builtin.get_url:
+    url: "{{ roles_alloy_url }}"
+    dest: /tmp
+
+- name: Распаковка файла
+  ansible.builtin.unarchive:
+    src: /tmp/alloy-linux-amd64.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+
+- name: Переименование файла
+  ansible.builtin.copy:
+    src: /usr/local/bin/alloy-linux-amd64
+    dest: /usr/local/bin/alloy
+    remote_src: yes
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Переименование файла
+  ansible.builtin.file:
+    path: /usr/local/bin/alloy-linux-amd64
+    state: absent
+
+- name: Настройка прав
+  ansible.builtin.file:
+    path: /usr/local/bin/alloy
+    mode: '0755'
+
+- name: Настройка systemd сервиса
+  ansible.builtin.copy:
+    src: alloy.service
+    dest: /etc/systemd/system/alloy.service
+
+- name: Подготовка директории
+  ansible.builtin.file:
+    path: /etc/alloy
+    state: directory
+
+- name: Передача конфига
+  ansible.builtin.copy:
+    src: config.alloy
+    dest: /etc/alloy/config.alloy
+
+- name: Cчитывание новых сервисов
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Активация сервиса
+  ansible.builtin.systemd_service:
+    state: restarted
+    enabled: true
+    name: alloy

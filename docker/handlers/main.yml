@@ -1,0 +1,5 @@
+- name: Перезагрузка сервиса
+  ansible.builtin.systemd_service:
+    state: restarted
+    enabled: true
+    name: docker

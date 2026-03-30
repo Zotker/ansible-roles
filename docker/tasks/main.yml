@@ -1,0 +1,41 @@
+- name: Подготовка окружения
+  ansible.builtin.apt:
+    name: 
+      - ca-certificates
+      - curl
+    update_cache: yes
+
+- name: Создание директории /etc/apt/keyrings
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Загрузка GPG ключа
+  ansible.builtin.get_url:
+    url: "{{ roles_docker_gpg }}"
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+
+- name: Добавление репозитория
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] "{{ roles_docker_url }}" {{ ansible_distribution_release }} stable
+    filename: docker
+    state: present
+
+- name: Установка docker
+  ansible.builtin.apt:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    update_cache: yes
+
+- name: Настройка proxy
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: Перезагрузка сервиса
+  
