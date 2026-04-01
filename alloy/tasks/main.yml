@@ -12,12 +12,6 @@
     mode: '0755'
   ignore_errors: "{{ ansible_check_mode }}"
 
-
-- name: Настройка прав
-  ansible.builtin.file:
-    path: /usr/local/bin/alloy
-    mode: '0755'
-
 - name: Настройка systemd сервиса
   ansible.builtin.copy:
     src: alloy.service
