@@ -1,32 +1,17 @@
-- name: Подготовка окружения
-  ansible.builtin.apt:
-    name: 
-      - zip 
-      - unzip
-    update_cache: yes
-
 - name: Скачивание файла
   ansible.builtin.get_url:
     url: "{{ roles_alloy_url }}"
-    dest: /tmp
+    dest: /tmp/alloy-linux-amd64
+  delegate_to: localhost
+  run_once: true
 
-- name: Распаковка файла
-  ansible.builtin.unarchive:
-    src: /tmp/alloy-linux-amd64.zip
-    dest: /usr/local/bin/
-    remote_src: yes
-
-- name: Переименование файла
+- name: Передача файла
   ansible.builtin.copy:
-    src: /usr/local/bin/alloy-linux-amd64
+    src: /tmp/alloy-linux-amd64
     dest: /usr/local/bin/alloy
-    remote_src: yes
+    mode: '0755'
   ignore_errors: "{{ ansible_check_mode }}"
 
-- name: Переименование файла
-  ansible.builtin.file:
-    path: /usr/local/bin/alloy-linux-amd64
-    state: absent
 
 - name: Настройка прав
   ansible.builtin.file:
