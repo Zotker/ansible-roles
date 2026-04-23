@@ -1,0 +1,21 @@
+services:
+{% for broker in kafka_brokers %}
+  {{ broker.name }}:
+    image: {{ kafka_image }}
+    container_name: {{ broker.container_name }}
+    ports:
+      - {{ broker.port }}:9092
+    environment:
+      KAFKA_NODE_ID: {{ broker.node_id }}
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://{{ broker.name }}:19092,PLAINTEXT_HOST://{{ broker.host }}:{{ broker.port }}'
+    env_file:
+      - .env
+    volumes:
+      - {{ broker.volume_name }}:/var/lib/kafka/data
+
+{% endfor %}
+
+volumes:
+{% for broker in kafka_brokers %}
+  {{ broker.volume_name }}:
+{% endfor %}

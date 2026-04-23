@@ -1,0 +1,21 @@
+services:
+
+{% for controller in kafka_controllers %}
+  {{ controller.name }}:
+    image: {{ kafka_image }}
+    container_name: {{ controller.container_name }}
+    ports:
+      - {{ controller.port }}:9093
+    environment:
+      KAFKA_NODE_ID: {{ controller.node_id }}
+    env_file:
+      - .env
+    volumes:
+      - {{ controller.volume_name }}:/var/lib/kafka/data
+      
+{% endfor %}
+
+volumes:
+{% for controller in kafka_controllers %}
+  {{ controller.volume_name }}:
+{% endfor %}
